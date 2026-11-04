@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#FBF8F4] font-sans text-ink antialiased;
+  }
+}
+
+@layer utilities {
+  /* Child-facing pastel wash (yellow, lavender, mint, blush). */
+  .bg-dream {
+    background-color: #fbf8f4;
+    background-image:
+      radial-gradient(40% 50% at 20% 10%, #fdf1c7 0%, transparent 70%),
+      radial-gradient(40% 50% at 85% 15%, #e8e6fb 0%, transparent 70%),
+      radial-gradient(40% 45% at 15% 90%, #e3f4df 0%, transparent 70%),
+      radial-gradient(40% 45% at 90% 85%, #fbe4e4 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+  /* Parent-facing calm lavender. */
+  .bg-calm {
+    background-color: #f5f2f4;
+    background-image:
+      radial-gradient(35% 45% at 25% 55%, #e6dcf3 0%, transparent 70%),
+      radial-gradient(35% 45% at 75% 35%, #ece6f6 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+}
