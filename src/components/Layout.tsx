@@ -60,11 +60,16 @@ export type ChapterRef = number | "final" | { label: string };
 
 /** Parent pages: signed-in email + sign out. */
 function ParentMenu() {
-  const [, navigate] = useLocation();
+  const [path, navigate] = useLocation();
   const { parent, updateParent, updateStory } = useAppState();
   if (!parent.account) return null;
   return (
     <div className="flex items-center gap-3 text-xs text-ink-muted">
+      {path !== ROUTES.dashboard && (
+        <Link href={ROUTES.dashboard} className="font-bold text-brand hover:underline">
+          Dashboard
+        </Link>
+      )}
       <span className="hidden sm:inline">{parent.account.email}</span>
       <button
         type="button"

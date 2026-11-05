@@ -163,10 +163,12 @@ export function AddChildScreen() {
 
 export function HandoverScreen() {
   const [, navigate] = useLocation();
-  const { activeChild, updateStory } = useAppState();
+  const { activeChild, story, updateStory } = useAppState();
 
   if (!activeChild) return <Redirect to={ROUTES.children} />;
   const mode = modeName(activeChild.age);
+  // Keep this child's unfinished story so they can continue it from the Start screen.
+  const resumesDraft = story.childId === activeChild.id && !!story.heroType && !story.confirmedByChild;
 
   return (
     <AppShell>
@@ -191,7 +193,7 @@ export function HandoverScreen() {
           <div className="mt-6 flex flex-col items-center gap-2 border-t border-ink/10 pt-5">
             <Button
               onClick={() => {
-                updateStory({ ...EMPTY_STORY });
+                if (!resumesDraft) updateStory({ ...EMPTY_STORY, childId: activeChild.id });
                 navigate(ROUTES.start);
               }}
             >

@@ -42,6 +42,7 @@ const GROUPS: { title: string; links: [string, string][] }[] = [
     links: [
       ["Create account", ROUTES.signup],
       ["Log in", ROUTES.login],
+      ["Parent dashboard", ROUTES.dashboard],
       ["Child profiles", ROUTES.children],
       ["Add child", ROUTES.addChild],
       ["Handover", ROUTES.handover],
@@ -107,7 +108,7 @@ export function ScreenIndex() {
       activeChildId: id,
       order: { plan: "hardback", orderNumber: "DB-89241", amount: 799 },
     });
-    updateStory({ ...DEMO_STORY, authorName: age < 12 ? "Alex Morgan" : "Maya Morgan" });
+    updateStory({ ...DEMO_STORY, authorName: age < 12 ? "Alex Morgan" : "Maya Morgan", childId: id });
   };
 
   return (

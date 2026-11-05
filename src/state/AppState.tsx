@@ -35,6 +35,8 @@ export interface StoryState {
   heroWords3: string;
   storyGeneratedAt: string | null;
   confirmedByChild: boolean;
+  // Not in the PRD StoryState yet — which child profile is writing this story (parent dashboard).
+  childId: string | null;
 }
 
 export const EMPTY_STORY: StoryState = {
@@ -64,6 +66,7 @@ export const EMPTY_STORY: StoryState = {
   heroWords3: "",
   storyGeneratedAt: null,
   confirmedByChild: false,
+  childId: null,
 };
 
 export interface ChildProfile {
@@ -142,7 +145,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return {
       story,
       updateStory: (patch) => setStory((s) => ({ ...s, ...patch })),
-      resetStory: () => setStory(EMPTY_STORY),
+      // A new story belongs to the child who has the device.
+      resetStory: () => setStory({ ...EMPTY_STORY, childId: parent.activeChildId }),
       parent,
       updateParent: (patch) => setParent((p) => ({ ...p, ...patch })),
       activeChild,

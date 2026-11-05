@@ -46,7 +46,7 @@ export function PlansScreen() {
         ))}
       </div>
       <div className="mt-12 flex flex-col items-center gap-2">
-        <LinkButton href={ROUTES.start} variant="ghost" className="h-9 bg-white px-4 shadow-sm">
+        <LinkButton href={ROUTES.dashboard} variant="ghost" className="h-9 bg-white px-4 shadow-sm">
           Not Now
         </LinkButton>
         <Subtle className="text-xs">Your child's story stays saved, even if you decide to purchase later.</Subtle>
@@ -230,8 +230,8 @@ export function SuccessScreen() {
           </div>
         </Card>
         <div className="text-center">
-          <LinkButton href={ROUTES.children} variant="ghost">
-            Back to Child Profiles
+          <LinkButton href={ROUTES.dashboard} variant="ghost">
+            Go to Dashboard
           </LinkButton>
         </div>
       </div>

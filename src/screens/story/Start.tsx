@@ -9,7 +9,7 @@ import { actStart, ROUTES } from "@/lib/routes";
 import type { Mode } from "@/state/AppState";
 
 /** Where to resume an unfinished draft, and how far along it is. */
-function resumePoint(story: StoryState, mode: Mode): { href: string; chapter: number } {
+export function resumePoint(story: StoryState, mode: Mode): { href: string; chapter: number } {
   if (story.storyGeneratedAt) return { href: ROUTES.book, chapter: 7 };
   if (story.facesChallenge3 !== null) return { href: actStart(3, mode), chapter: 7 };
   if (story.obstacles2.length) return { href: ROUTES.gate, chapter: 6 };
@@ -95,7 +95,7 @@ export function StartScreen() {
 
       <p className="mt-auto pt-12 text-center text-xs text-ink-muted">
         Grown-up?{" "}
-        <Link href={ROUTES.children} className="font-bold underline">
+        <Link href={ROUTES.dashboard} className="font-bold underline">
           Parent area
         </Link>
       </p>

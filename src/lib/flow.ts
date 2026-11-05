@@ -55,10 +55,10 @@ export function storyFlow(story: StoryState, mode: Mode): FlowStep[] {
  */
 export function redirectFor(path: string, story: StoryState, parent: ParentState, mode: Mode): string | null {
   const authPages: string[] = [ROUTES.signup, ROUTES.login];
-  if (authPages.includes(path)) return parent.account ? ROUTES.children : null;
+  if (authPages.includes(path)) return parent.account ? ROUTES.dashboard : null;
   if (!parent.account) return ROUTES.signup;
 
-  const parentSetup: string[] = [ROUTES.children, ROUTES.addChild];
+  const parentSetup: string[] = [ROUTES.dashboard, ROUTES.children, ROUTES.addChild];
   if (parentSetup.includes(path)) return null;
   if (!parent.activeChildId) return ROUTES.children;
 

@@ -13,6 +13,7 @@ export const ROUTES = {
   library: "/library",
   signup: "/signup",
   login: "/login",
+  dashboard: "/parent/dashboard",
   children: "/parent/children",
   addChild: "/parent/children/new",
   handover: "/parent/handover",

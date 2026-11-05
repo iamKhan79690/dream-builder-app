@@ -5,6 +5,7 @@ import { redirectFor } from "@/lib/flow";
 import { ROUTES } from "@/lib/routes";
 import { LoginScreen, SignupScreen } from "@/screens/parent/Auth";
 import { AddChildScreen, ChildrenScreen, HandoverScreen } from "@/screens/parent/Children";
+import { DashboardScreen } from "@/screens/parent/Dashboard";
 import { ReviewScreen } from "@/screens/parent/Review";
 import { LibraryScreen, StartScreen } from "@/screens/story/Start";
 import { AuthorScreen, FormatScreen, StyleScreen } from "@/screens/story/Setup";
@@ -89,6 +90,7 @@ export function App() {
         <Route path={ROUTES.library} component={LibraryScreen} />
         <Route path={ROUTES.signup} component={SignupScreen} />
         <Route path={ROUTES.login} component={LoginScreen} />
+        <Route path={ROUTES.dashboard} component={DashboardScreen} />
         <Route path={ROUTES.children} component={ChildrenScreen} />
         <Route path={ROUTES.addChild} component={AddChildScreen} />
         <Route path={ROUTES.handover} component={HandoverScreen} />

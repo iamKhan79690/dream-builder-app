@@ -152,7 +152,8 @@ export function LoginScreen() {
         disabled={!email.includes("@") || !password}
         onClick={() => {
           updateParent({ account: parent.account ?? { name: email.split("@")[0], email } });
-          navigate(ROUTES.children);
+          // Returning parents land on the dashboard; new accounts go through child setup.
+          navigate(ROUTES.dashboard);
         }}
       >
         Sign In <Arrow />
