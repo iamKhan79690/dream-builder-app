@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BookOpen, Wand2 } from "lucide-react";
+import { BookOpen, LayoutDashboard, Wand2 } from "lucide-react";
 import { AppShell } from "@/components/Layout";
 import { Arrow, Button, Card, LinkButton, Subtle } from "@/components/ui";
 import { HEROES } from "@/data/content";
@@ -54,9 +54,15 @@ export function StartScreen() {
   return (
     <AppShell
       right={
-        <LinkButton href={ROUTES.library} className="h-9 px-4">
-          <BookOpen className="h-4 w-4" /> Story Library
-        </LinkButton>
+        <div className="flex items-center gap-2">
+          {/* Icon-only on phones so both fit beside the logo. */}
+          <LinkButton href={ROUTES.library} className="h-9 px-3 sm:px-4">
+            <BookOpen className="h-4 w-4" /> <span className="sr-only sm:not-sr-only">Story Library</span>
+          </LinkButton>
+          <LinkButton href={ROUTES.dashboard} variant="outline" className="h-9 px-3 sm:px-4">
+            <LayoutDashboard className="h-4 w-4" /> <span className="sr-only sm:not-sr-only">Dashboard</span>
+          </LinkButton>
+        </div>
       }
     >
       <section className="mx-auto flex max-w-3xl flex-col items-center text-center">
