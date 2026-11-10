@@ -47,9 +47,12 @@ export function AppShell({
 
   return (
     <div className={cx("flex min-h-screen flex-col", resolved === "warm" ? "bg-dream" : "bg-calm")}>
-      <header className={cx(CONTAINER, "flex h-[72px] shrink-0 items-center justify-between gap-4")}>
-        <Logo plain={plainLogo} />
-        {right ?? (parentPage && parent.account && <ParentMenu />)}
+      {/* Sticky so the navbar stays visible while scrolling; frosted so content doesn't show through. */}
+      <header className="sticky top-0 z-40 shrink-0 border-b border-ink/5 bg-white/70 backdrop-blur-md">
+        <div className={cx(CONTAINER, "flex h-[72px] items-center justify-between gap-4")}>
+          <Logo plain={plainLogo} />
+          {right ?? (parentPage && parent.account && <ParentMenu />)}
+        </div>
       </header>
       <main className={cx(CONTAINER, "flex flex-1 flex-col py-8 sm:py-12")}>{children}</main>
     </div>
@@ -120,7 +123,7 @@ export function WizardLayout({
         </div>
         {/* Stretches to the card height; the art stays in view while a tall card scrolls. */}
         <div className="hidden self-stretch lg:block">
-          <div className="sticky top-0 flex h-full max-h-screen items-center justify-center">
+          <div className="sticky top-[72px] flex h-full max-h-[calc(100vh-72px)] items-center justify-center">
             {aside ?? <HeroArt label={asset ?? "Hero artwork"} src={art} />}
           </div>
         </div>

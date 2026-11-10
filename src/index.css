@@ -19,6 +19,35 @@
       radial-gradient(40% 45% at 90% 85%, #fbe4e4 0%, transparent 70%);
     background-attachment: fixed;
   }
+  /* Flipbook: 3D page turns. */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  /* Warm book paper with a faint vignette. */
+  .paper {
+    background-color: #fcfaf4;
+    background-image:
+      radial-gradient(130% 100% at 50% 45%, rgba(255, 255, 255, 0) 62%, rgba(140, 110, 50, 0.07) 100%),
+      repeating-linear-gradient(0deg, rgba(120, 90, 40, 0.012) 0 1px, transparent 1px 3px);
+  }
+  /* Patterned endpapers inside the covers. */
+  .endpaper {
+    background-color: #eeeafb;
+    background-image:
+      radial-gradient(circle, rgba(91, 60, 209, 0.22) 1.3px, transparent 1.8px),
+      radial-gradient(circle, rgba(217, 119, 6, 0.28) 1.1px, transparent 1.6px);
+    background-size: 22px 22px, 22px 22px;
+    background-position: 0 0, 11px 11px;
+  }
+  /* Edges of the stacked pages. */
+  .page-stack {
+    background-color: #efe9dc;
+    background-image: repeating-linear-gradient(to right, #f7f3ea 0 1px, #d8d0bf 1px 2px);
+  }
   /* Parent-facing calm lavender. */
   .bg-calm {
     background-color: #f5f2f4;

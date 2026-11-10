@@ -47,6 +47,13 @@ function CenteredStep({ children }: { children: ReactNode }) {
   );
 }
 
+/** "Next" button label on the format and style steps, named after the chosen format. */
+function createLabel(format: string | null | undefined): string {
+  if (format === "comic") return "Create My Comic Book";
+  if (format === "storybook") return "Create My Storybook";
+  return "Create My Book";
+}
+
 export function FormatScreen() {
   const [, navigate] = useLocation();
   const { story, updateStory } = useAppState();
@@ -81,7 +88,7 @@ export function FormatScreen() {
         <StepNav
           onBack={() => navigate(ROUTES.author)}
           onNext={() => navigate(ROUTES.style)}
-          nextLabel="Create My Book"
+          nextLabel={createLabel(story.selectedFormat)}
           nextDisabled={!story.selectedFormat}
         />
       </Card>
@@ -117,7 +124,7 @@ export function StyleScreen() {
         <StepNav
           onBack={() => navigate(ROUTES.format)}
           onNext={() => navigate(ROUTES.hero)}
-          nextLabel="Create My Book"
+          nextLabel={createLabel(story.selectedFormat)}
           nextDisabled={!story.comicVibe}
         />
       </Card>

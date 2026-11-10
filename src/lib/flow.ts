@@ -31,8 +31,8 @@ export function storyFlow(story: StoryState, mode: Mode): FlowStep[] {
     { path: ROUTES.author, done: !!story.authorName.trim() },
     { path: ROUTES.format, done: !!story.selectedFormat },
     { path: ROUTES.style, done: !!story.comicVibe },
-    { path: ROUTES.hero, done: !!story.heroType },
-    ...(explorer ? [{ path: ROUTES.heroName, done: !!story.heroType }] : []),
+    { path: ROUTES.hero, done: !!story.heroType && (explorer || !!story.heroPronoun) },
+    ...(explorer ? [{ path: ROUTES.heroName, done: !!story.heroType && !!story.heroPronoun }] : []),
     { path: ROUTES.strength, done: story.charStrengths.length > 0 },
     // Tools are optional; reaching the dream step counts as done.
     ...(explorer ? [{ path: ROUTES.tools, done: story.charStrengths.length > 0 }] : []),

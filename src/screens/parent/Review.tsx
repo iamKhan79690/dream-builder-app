@@ -2,43 +2,47 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { MessageSquare } from "lucide-react";
 import { AppShell } from "@/components/Layout";
-import { BookSpread, PageNav } from "@/components/BookSpread";
+import { Flipbook } from "@/components/Flipbook";
 import { pageText } from "@/data/storyText";
+import { PANEL_LABELS } from "@/data/content";
 import { Button, Card, Heading, Subtle } from "@/components/ui";
 import { useAppState } from "@/state/AppState";
+import { possessive } from "@/lib/text";
 import { ROUTES } from "@/lib/routes";
 
 /** Parent review: read-only story with per-page change requests (PRD §3.1 Phase 3). */
 export function ReviewScreen() {
   const [, navigate] = useLocation();
   const { story, heroName, activeChild } = useAppState();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number | null>(null);
   const [commenting, setCommenting] = useState(false);
   const [comments, setComments] = useState<Record<number, string>>({});
   const childName = activeChild?.name ?? "your child";
+  const noteCount = Object.values(comments).filter((c) => c.trim()).length;
 
   return (
     <AppShell>
-      <div className="my-auto flex flex-col items-center">
-        <Heading className="mb-8">Review Your Child's Story</Heading>
-        <BookSpread page={page} author={story.authorName || "Author Name"} text={pageText(page, story, heroName)} />
-        <PageNav page={page} onChange={setPage} />
+      <div className="my-auto flex w-full flex-col items-center">
+        <Heading className="text-center">Review Your Child's Story</Heading>
+        <Subtle className="mb-8 mt-1 text-center">Turn the pages of {possessive(heroName)} adventure, just as it will be printed.</Subtle>
+        <Flipbook textFor={(p) => pageText(p, story, heroName)} notes={comments} onPositionChange={(at) => setPage(at.part)} />
 
         {commenting && (
           <Card className="mt-6 w-full max-w-[880px] border-2 border-amber-200 p-5 sm:p-5">
             <label htmlFor="comment" className="flex items-center gap-2 text-sm font-bold text-ink">
-              <MessageSquare className="h-4 w-4 text-amber-600" /> Parent note for page {page}
+              <MessageSquare className="h-4 w-4 text-amber-600" /> {page ? `Parent note for “${PANEL_LABELS[page - 1]}”` : "Parent note"}
             </label>
             <textarea
               id="comment"
               rows={3}
-              value={comments[page] ?? ""}
-              onChange={(e) => setComments({ ...comments, [page]: e.target.value })}
-              placeholder="Describe the change you'd like…"
-              className="mt-2 w-full resize-none rounded-xl border border-ink/15 bg-amber-50/50 p-3 text-sm focus:border-amber-400 focus:outline-none"
+              disabled={page === null}
+              value={page ? (comments[page] ?? "") : ""}
+              onChange={(e) => page && setComments({ ...comments, [page]: e.target.value })}
+              placeholder={page ? "Describe the change you'd like…" : "Turn to a story page to add a note."}
+              className="mt-2 w-full resize-none rounded-xl border border-ink/15 bg-amber-50/50 p-3 text-sm focus:border-amber-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
             />
             <Subtle className="mt-2 text-xs">
-              {Object.values(comments).filter(Boolean).length} page note(s) so far. Notes are shown separately from {childName}'s own words.
+              {noteCount} page note(s) so far. Notes are shown separately from {childName}'s own words.
             </Subtle>
           </Card>
         )}

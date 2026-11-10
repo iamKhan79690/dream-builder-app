@@ -52,7 +52,7 @@ export function pageQuote(page: number, story: StoryState): string | null {
 }
 
 export function pageText(page: number, story: StoryState, hero: string): string {
-  const p = PRONOUN_FORMS[story.heroPronoun];
+  const p = PRONOUN_FORMS[story.heroPronoun ?? "he"];
   const He = upperFirst(p.subject);
   const His = upperFirst(p.possessive);
   const heros = possessive(hero);

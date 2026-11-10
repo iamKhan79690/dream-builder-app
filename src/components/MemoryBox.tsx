@@ -22,7 +22,7 @@ export function MemoryBox() {
     {
       label: "Chapter 1 · Hero",
       value: story.heroType
-        ? `${titleOf(HEROES, story.heroType)} (${PRONOUNS.find((p) => p.id === story.heroPronoun)?.desc})`
+        ? titleOf(HEROES, story.heroType) + (story.heroPronoun ? ` (${PRONOUNS.find((p) => p.id === story.heroPronoun)?.desc})` : "")
         : "",
       href: ROUTES.hero,
     },

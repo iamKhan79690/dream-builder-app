@@ -295,25 +295,28 @@ export function GateScreen() {
           src={asset("scenes/gate.webp")}
           className="my-8 h-[240px] w-full max-w-[240px]"
         />
-        <Button
-          className="min-w-[200px]"
-          onClick={() => {
-            updateStory({ facesChallenge3: true });
-            navigate(actStart(3, mode));
-          }}
-        >
-          {senior ? "Shape the Final Challenge" : `Help ${heroName} face it`} <Arrow />
-        </Button>
-        <Button
-          variant="outline"
-          className="mt-3 min-w-[280px]"
-          onClick={() => {
-            updateStory({ facesChallenge3: false, obstacles3: [] });
-            navigate(ROUTES.generating);
-          }}
-        >
-          Continue to the Ending
-        </Button>
+        {/* One column so both choices share the same width and centre line. */}
+        <div className="flex w-full max-w-[320px] flex-col gap-3">
+          <Button
+            className="w-full"
+            onClick={() => {
+              updateStory({ facesChallenge3: true });
+              navigate(actStart(3, mode));
+            }}
+          >
+            {senior ? "Shape the Final Challenge" : `Help ${heroName} face it`} <Arrow />
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              updateStory({ facesChallenge3: false, obstacles3: [] });
+              navigate(ROUTES.generating);
+            }}
+          >
+            Continue to the Ending
+          </Button>
+        </div>
         <Subtle className="mt-3 text-xs">
           {senior ? `Both choices bring ${possessive(heroName)} journey to a complete, meaningful story finale.` : `Either choice will give ${possessive(heroName)} story a complete ending.`}
         </Subtle>

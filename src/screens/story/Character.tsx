@@ -99,7 +99,7 @@ export function HeroScreen() {
           onBack={() => navigate(ROUTES.style)}
           onNext={() => navigate(senior ? ROUTES.strength : ROUTES.heroName)}
           nextLabel={senior ? "Continue" : "Choose a Hero"}
-          nextDisabled={!story.heroType}
+          nextDisabled={!story.heroType || (senior && !story.heroPronoun)}
         />
       </Card>
     </WizardLayout>
@@ -122,6 +122,7 @@ export function HeroNameScreen() {
           backLabel="Back to Hero"
           onNext={() => navigate(ROUTES.strength)}
           nextLabel={`Continue with ${heroName}`}
+          nextDisabled={!story.heroPronoun}
         />
       </Card>
     </WizardLayout>

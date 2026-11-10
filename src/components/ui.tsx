@@ -155,7 +155,7 @@ export function OptionCard({
         {title}
       </span>
       {desc && (
-        <span className={cx("text-ink-muted", centered ? "mt-2 text-xs leading-3" : compact ? "mt-1 text-xs leading-4" : "text-[13px] leading-5")}>
+        <span className={cx("text-ink/80", centered ? "mt-2 text-xs leading-3" : compact ? "mt-1 text-xs leading-4" : "text-[13px] leading-5")}>
           {desc}
         </span>
       )}

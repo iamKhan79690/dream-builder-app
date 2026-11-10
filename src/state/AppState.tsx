@@ -12,7 +12,8 @@ export interface StoryState {
   comicVibe: ArtStyle | null;
   heroType: HeroType | null;
   charName: string;
-  heroPronoun: Pronoun;
+  /** null until the child picks one; nothing is preselected. */
+  heroPronoun: Pronoun | null;
   charStrengths: string[];
   selfLove: string;
   charTools: string[];
@@ -45,7 +46,7 @@ export const EMPTY_STORY: StoryState = {
   comicVibe: null,
   heroType: null,
   charName: "",
-  heroPronoun: "he",
+  heroPronoun: null,
   charStrengths: [],
   selfLove: "",
   charTools: [],
@@ -131,8 +132,8 @@ const AppStateContext = createContext<AppStateValue | null>(null);
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [story, setStory] = useState<StoryState>(() => {
     const saved = load(STORY_KEY, EMPTY_STORY);
-    // Drafts saved before "They" was removed fall back to the default pronoun.
-    return PRONOUNS.some((p) => p.id === saved.heroPronoun) ? saved : { ...saved, heroPronoun: EMPTY_STORY.heroPronoun };
+    // Drafts saved before "They" was removed go back to "not chosen".
+    return saved.heroPronoun === null || PRONOUNS.some((p) => p.id === saved.heroPronoun) ? saved : { ...saved, heroPronoun: null };
   });
   const [parent, setParent] = useState<ParentState>(() => load(PARENT_KEY, EMPTY_PARENT));
 

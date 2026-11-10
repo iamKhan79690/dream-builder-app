@@ -142,8 +142,8 @@ export function AddChildScreen() {
           {age !== null && (
             <Subtle className="mt-3 text-xs">
               {modeForAge(age) === "junior"
-                ? `Based on age ${age}, we recommend Explorer Mode: more pictures, guided audio, less typing.`
-                : `Based on age ${age}, we recommend Creator Mode: deeper choices, richer words, more of their own writing.`}
+                ? `Based on age ${age}, we recommend Explorer Mode. More pictures, guided audio, less typing.`
+                : `Based on age ${age}, we recommend Creator Mode. Deeper choices, richer words, more of their own writing.`}
             </Subtle>
           )}
 
