@@ -113,7 +113,8 @@ export function AddChildScreen() {
             <ChevronDown className="pointer-events-none absolute right-2 top-2.5 h-4 w-4 text-ink" />
           </div>
 
-          <Field id="child-name" label="Child's First Name" placeholder="e.g. Alex" value={name} onChange={(e) => setName(e.target.value)} />
+          {/* Enter saves once an age is picked too (save() checks both). */}
+          <Field id="child-name" label="Child's First Name" placeholder="e.g. Alex" value={name} onChange={(e) => setName(e.target.value)} onEnter={save} />
 
           <div className="mb-2 flex items-center justify-between">
             <span className="text-sm font-semibold text-ink">Child's age</span>

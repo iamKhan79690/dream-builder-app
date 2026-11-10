@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Mic } from "lucide-react";
-import { Button } from "./ui";
+import { Button, enterKey } from "./ui";
 
 // Minimal typing for the Web Speech API (not in lib.dom for all browsers).
 interface SpeechRecognitionLike {
@@ -24,11 +24,14 @@ export function VoiceTextArea({
   onChange,
   placeholder,
   id,
+  onEnter,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
   id: string;
+  /** Enter continues the step; Shift+Enter still starts a new line. */
+  onEnter?: () => void;
 }) {
   const [listening, setListening] = useState(false);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
@@ -56,6 +59,7 @@ export function VoiceTextArea({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={enterKey(onEnter)}
         placeholder={placeholder}
         rows={4}
         className="w-full resize-none border-b border-ink/10 bg-transparent p-1 text-sm text-ink placeholder:text-ink-faint focus:outline-none"

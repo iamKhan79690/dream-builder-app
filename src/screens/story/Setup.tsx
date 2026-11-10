@@ -30,6 +30,7 @@ export function AuthorScreen() {
           placeholder={`e.g. ${activeChild?.name ?? "Maya"}`}
           value={story.authorName}
           onChange={(e) => updateStory({ authorName: e.target.value })}
+          onEnter={() => story.authorName.trim() && navigate(ROUTES.format)}
         />
         <Button className="mt-6 w-full" disabled={!story.authorName.trim()} onClick={() => navigate(ROUTES.format)}>
           Start My Story <Arrow />
@@ -105,8 +106,8 @@ export function StyleScreen() {
     <CenteredStep>
       <Card>
         <Heading>{comic ? "How would you like your comic to look?" : "How should your story look?"}</Heading>
-        <p className="mt-4 text-sm font-bold text-ink">Choose the art style for your adventure.</p>
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <p className="mt-1 text-sm font-bold text-ink">Choose the art style for your adventure.</p>
+        <div className="mt-6 grid grid-cols-2 gap-3">
           {ART_STYLES.map((s, i) => (
             <OptionCard
               key={s.id}

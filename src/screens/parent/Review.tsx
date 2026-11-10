@@ -47,12 +47,24 @@ export function ReviewScreen() {
           </Card>
         )}
 
-        <div className="mt-8 flex gap-3">
-          <Button onClick={() => navigate(ROUTES.plans)}>Confirm Story</Button>
-          <Button variant="outline" className="border-ink/10 shadow-sm" onClick={() => setCommenting(!commenting)}>
-            {commenting ? "Done Adding Notes" : "Request Changes"}
-          </Button>
+        {/* While notes are being written, finishing them is the only next step; Confirm Story comes back afterwards. */}
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {commenting ? (
+            <Button onClick={() => setCommenting(false)}>Done Editing Notes</Button>
+          ) : (
+            <>
+              <Button onClick={() => navigate(ROUTES.plans)}>Confirm Story</Button>
+              <Button variant="outline" className="border-ink/10 shadow-sm" onClick={() => setCommenting(true)}>
+                {noteCount ? "Edit Notes" : "Request Changes"}
+              </Button>
+            </>
+          )}
         </div>
+        {!commenting && noteCount > 0 && (
+          <p className="mt-3 text-center text-xs font-semibold text-amber-700">
+            {noteCount} page note{noteCount === 1 ? "" : "s"} will be sent with this story.
+          </p>
+        )}
         <Subtle className="mt-3 max-w-md text-center text-xs">
           This is {childName}'s story — their words and ideas are what make it special. You can ask for a change, but try to
           keep it sounding like them.

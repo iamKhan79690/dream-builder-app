@@ -6,7 +6,7 @@ import { Arrow, Button, Card, CheckRow, Field } from "@/components/ui";
 import { useAppState } from "@/state/AppState";
 import { ROUTES } from "@/lib/routes";
 
-function PasswordField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function PasswordField({ value, onChange, onEnter }: { value: string; onChange: (v: string) => void; onEnter?: () => void }) {
   const [show, setShow] = useState(false);
   return (
     <Field
@@ -16,6 +16,7 @@ function PasswordField({ value, onChange }: { value: string; onChange: (v: strin
       placeholder="•••••••"
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onEnter={onEnter}
       trailing={
         <button type="button" onClick={() => setShow(!show)} aria-label={show ? "Hide password" : "Show password"}>
           {show ? <EyeOff className="h-4 w-4 text-ink-muted" /> : <Eye className="h-4 w-4 text-ink-muted" />}
@@ -88,12 +89,17 @@ export function SignupScreen() {
   const [consent, setConsent] = useState(false);
 
   const canSubmit = name.trim() && email.includes("@") && password.length >= 8 && isAdult && consent;
+  const submit = () => {
+    if (!canSubmit) return;
+    updateParent({ account: { name, email } });
+    navigate(ROUTES.children);
+  };
 
   return (
     <AuthFrame title="Create your account">
-      <Field id="name" label="Full Name" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} />
-      <Field id="email" label="Email address" type="email" placeholder="name@company.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <PasswordField value={password} onChange={setPassword} />
+      <Field id="name" label="Full Name" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} onEnter={submit} />
+      <Field id="email" label="Email address" type="email" placeholder="name@company.com" value={email} onChange={(e) => setEmail(e.target.value)} onEnter={submit} />
+      <PasswordField value={password} onChange={setPassword} onEnter={submit} />
       <CheckRow
         checked={isAdult}
         onChange={setIsAdult}
@@ -109,10 +115,7 @@ export function SignupScreen() {
       <Button
         className="mt-2 w-full"
         disabled={!canSubmit}
-        onClick={() => {
-          updateParent({ account: { name, email } });
-          navigate(ROUTES.children);
-        }}
+        onClick={submit}
       >
         Create Account <Arrow />
       </Button>
@@ -133,11 +136,17 @@ export function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const signIn = () => {
+    if (!email.includes("@") || !password) return;
+    updateParent({ account: parent.account ?? { name: email.split("@")[0], email } });
+    // Returning parents land on the dashboard; new accounts go through child setup.
+    navigate(ROUTES.dashboard);
+  };
 
   return (
     <AuthFrame title="Log in">
-      <Field id="email" label="Email Address" type="email" placeholder="name@company.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <PasswordField value={password} onChange={setPassword} />
+      <Field id="email" label="Email Address" type="email" placeholder="name@company.com" value={email} onChange={(e) => setEmail(e.target.value)} onEnter={signIn} />
+      <PasswordField value={password} onChange={setPassword} onEnter={signIn} />
       <div className="-mt-1 mb-5 flex items-center justify-between text-xs">
         <label className="flex items-center gap-2 text-ink-muted">
           <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="accent-brand" />
@@ -150,11 +159,7 @@ export function LoginScreen() {
       <Button
         className="w-full"
         disabled={!email.includes("@") || !password}
-        onClick={() => {
-          updateParent({ account: parent.account ?? { name: email.split("@")[0], email } });
-          // Returning parents land on the dashboard; new accounts go through child setup.
-          navigate(ROUTES.dashboard);
-        }}
+        onClick={signIn}
       >
         Sign In <Arrow />
       </Button>

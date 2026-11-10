@@ -141,6 +141,8 @@ export function ActScreen() {
     </div>
   );
 
+  // Enter in the hero's words finishes the act, once every answer for it is in.
+  const actComplete = part === "all" ? !!obstacleId && !!feelingId && !!moveId && !!words.trim() : !!moveId && !!words.trim();
   const wordsInput = (label: string) => (
     <>
       <SectionLabel>{label}</SectionLabel>
@@ -148,6 +150,7 @@ export function ActScreen() {
         placeholder={HERO_WORDS_PLACEHOLDER[act]}
         value={words}
         onChange={(e) => updateStory({ [keys.words]: e.target.value })}
+        onEnter={() => actComplete && navigate(afterAct)}
       />
     </>
   );
@@ -234,7 +237,7 @@ export function ActScreen() {
     <WizardLayout chapter={CHAPTER[act]} progress={{ total: 3, current: step }} asset={screens.asset} art={screens.art}>
       <Card>
         <Heading>{screens.title}</Heading>
-        <Subtle className="mb-6 mt-2">{screens.sub}</Subtle>
+        <Subtle className="mb-6 mt-1">{screens.sub}</Subtle>
         {screens.body}
         <StepNav onBack={() => navigate(screens.back)} onNext={() => navigate(screens.next)} nextDisabled={!screens.ready} />
       </Card>
@@ -261,6 +264,7 @@ export function RestScreen() {
           id="safe-place"
           value={story.safePlaceText}
           onChange={(safePlaceText) => updateStory({ safePlaceText })}
+          onEnter={() => story.safePlaceText.trim() && navigate(actStart(2, mode))}
           placeholder={`${heroName} cuddles with a pet and takes a quiet moment to gather strength.`}
         />
         <Chips items={REST_IDEAS} active={story.safePlaceText} onPick={(safePlaceText) => updateStory({ safePlaceText })} />
@@ -285,7 +289,7 @@ export function GateScreen() {
         <Heading>
           {senior ? `You shaped ${possessive(heroName)} choices, setbacks and next steps. The story is ready to read.` : "There's one more part of the journey"}
         </Heading>
-        <Subtle className="mt-2">
+        <Subtle className="mx-auto mt-2 max-w-xl">
           {senior
             ? "Your story has one more chapter waiting. Continue or finish your story here."
             : `Would you like to help ${heroName} face one more challenge, or let the story continue from here?`}

@@ -37,7 +37,7 @@ function HeroList({ value, onPick }: { value: HeroType | null; onPick: (h: HeroT
   );
 }
 
-function NameAndPronoun() {
+function NameAndPronoun({ onEnter }: { onEnter?: () => void }) {
   const { story, updateStory } = useAppState();
   return (
     <>
@@ -50,6 +50,7 @@ function NameAndPronoun() {
         placeholder="e.g. Pip"
         value={story.charName}
         onChange={(e) => updateStory({ charName: e.target.value })}
+        onEnter={onEnter}
       />
       <p className="mb-3 mt-6 text-xs font-extrabold uppercase tracking-wide text-ink">Which words should the story use for your hero?</p>
       <div className="grid grid-cols-2 gap-3">
@@ -94,7 +95,7 @@ export function HeroScreen() {
           {senior ? "Choose a hero, name them, and decide how they enter the story." : "Choose a hero, give them a name, and make the story your own."}
         </Subtle>
         <HeroList value={story.heroType} onPick={(heroType) => updateStory({ heroType })} />
-        {senior && <NameAndPronoun />}
+        {senior && <NameAndPronoun onEnter={() => story.heroType && story.heroPronoun && navigate(ROUTES.strength)} />}
         <StepNav
           onBack={() => navigate(ROUTES.style)}
           onNext={() => navigate(senior ? ROUTES.strength : ROUTES.heroName)}
@@ -116,7 +117,7 @@ export function HeroNameScreen() {
       <Card>
         <Heading>Personalize your hero</Heading>
         <Subtle className="mt-1">Choose how your hero is named and addressed in your story.</Subtle>
-        <NameAndPronoun />
+        <NameAndPronoun onEnter={() => story.heroPronoun && navigate(ROUTES.strength)} />
         <StepNav
           onBack={() => navigate(ROUTES.hero)}
           backLabel="Back to Hero"
@@ -187,7 +188,12 @@ export function StrengthScreen() {
           ))}
         </div>
         <SectionLabel>What does {heroName} love most about themselves?</SectionLabel>
-        <TextInput placeholder={`${heroName} loves being…`} value={story.selfLove} onChange={(e) => updateStory({ selfLove: e.target.value })} />
+        <TextInput
+          placeholder={`${heroName} loves being…`}
+          value={story.selfLove}
+          onChange={(e) => updateStory({ selfLove: e.target.value })}
+          onEnter={() => story.charStrengths.length > 0 && navigate(senior ? ROUTES.dream : ROUTES.tools)}
+        />
 
         {senior && (
           <>
@@ -274,6 +280,7 @@ export function DreamScreen() {
             id="aspiration"
             value={story.aspiration}
             onChange={(aspiration) => updateStory({ aspiration })}
+            onEnter={() => story.aspiration.trim() && navigate(actStart(1, mode))}
             placeholder={`${heroName} dreams of…`}
           />
         </div>

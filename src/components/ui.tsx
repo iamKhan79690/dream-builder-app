@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, InputHTMLAttributes, KeyboardEvent, ReactNode } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, ArrowRight, Check, ImageIcon } from "lucide-react";
 import { cx } from "@/lib/text";
@@ -211,19 +211,34 @@ export function Chips({ items, onPick, active }: { items: string[]; onPick: (v: 
 const INPUT =
   "w-full rounded-xl border border-ink/10 px-4 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none";
 
+/**
+ * Key handler that runs `onEnter` when Enter is pressed, so a field can continue the step without the mouse.
+ * Shift+Enter is left alone (a new line in text areas), as is Enter while an IME is composing text.
+ */
+export function enterKey<T extends HTMLElement>(onEnter?: () => void, onKeyDown?: (e: KeyboardEvent<T>) => void) {
+  return (e: KeyboardEvent<T>) => {
+    onKeyDown?.(e);
+    if (!onEnter || e.defaultPrevented || e.key !== "Enter" || e.shiftKey || e.nativeEvent.isComposing) return;
+    e.preventDefault();
+    onEnter();
+  };
+}
+
 export function Field({
   label,
   id,
   trailing,
+  onEnter,
+  onKeyDown,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & { label: string; id: string; trailing?: ReactNode }) {
+}: InputHTMLAttributes<HTMLInputElement> & { label: string; id: string; trailing?: ReactNode; onEnter?: () => void }) {
   return (
     <div className="mb-4">
       <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-ink">
         {label}
       </label>
       <div className="relative">
-        <input id={id} className={cx(INPUT, "h-11 bg-white", trailing ? "pr-10" : undefined)} {...props} />
+        <input id={id} className={cx(INPUT, "h-11 bg-white", trailing ? "pr-10" : undefined)} onKeyDown={enterKey(onEnter, onKeyDown)} {...props} />
         {trailing && <div className="absolute inset-y-0 right-3 flex items-center">{trailing}</div>}
       </div>
     </div>
@@ -231,8 +246,14 @@ export function Field({
 }
 
 /** 54px input. `filled` gives the grey field used for names in Figma. */
-export function TextInput({ filled, className, ...props }: InputHTMLAttributes<HTMLInputElement> & { filled?: boolean }) {
-  return <input className={cx(INPUT, "h-[54px]", filled ? "bg-tile" : "bg-white", className)} {...props} />;
+export function TextInput({
+  filled,
+  className,
+  onEnter,
+  onKeyDown,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & { filled?: boolean; onEnter?: () => void }) {
+  return <input className={cx(INPUT, "h-[54px]", filled ? "bg-tile" : "bg-white", className)} onKeyDown={enterKey(onEnter, onKeyDown)} {...props} />;
 }
 
 export function CheckRow({

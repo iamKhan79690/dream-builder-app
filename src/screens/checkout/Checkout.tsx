@@ -109,11 +109,11 @@ export function PayScreen() {
             </div>
             {method === "card" && (
               <div className="mt-5">
-                <Field id="card-name" label="Cardholder Name" placeholder="Name on card" autoComplete="cc-name" />
-                <Field id="card-number" label="Card Number" placeholder="•••• •••• •••• ••••" inputMode="numeric" autoComplete="cc-number" />
+                <Field id="card-name" label="Cardholder Name" placeholder="Name on card" autoComplete="cc-name" onEnter={pay} />
+                <Field id="card-number" label="Card Number" placeholder="•••• •••• •••• ••••" inputMode="numeric" autoComplete="cc-number" onEnter={pay} />
                 <div className="grid grid-cols-2 gap-3">
-                  <Field id="card-exp" label="Expiry Date" placeholder="MM/YY" autoComplete="cc-exp" />
-                  <Field id="card-cvc" label="Security Code" placeholder="CVC" inputMode="numeric" autoComplete="cc-csc" />
+                  <Field id="card-exp" label="Expiry Date" placeholder="MM/YY" autoComplete="cc-exp" onEnter={pay} />
+                  <Field id="card-cvc" label="Security Code" placeholder="CVC" inputMode="numeric" autoComplete="cc-csc" onEnter={pay} />
                 </div>
               </div>
             )}
@@ -121,13 +121,13 @@ export function PayScreen() {
 
           <Card>
             <h2 className="mb-4 font-bold text-ink">{physical ? "Billing & Delivery Address" : "Billing Address"}</h2>
-            <Field id="addr1" label="Address Line 1" placeholder="Apartment, suite, unit, etc." autoComplete="address-line1" />
-            <Field id="addr2" label="Address Line 2 (Optional)" placeholder="Apartment, suite, unit, etc." autoComplete="address-line2" />
+            <Field id="addr1" label="Address Line 1" placeholder="Apartment, suite, unit, etc." autoComplete="address-line1" onEnter={pay} />
+            <Field id="addr2" label="Address Line 2 (Optional)" placeholder="Apartment, suite, unit, etc." autoComplete="address-line2" onEnter={pay} />
             <div className="grid grid-cols-2 gap-3">
-              <Field id="city" label="City" placeholder="Dubai" autoComplete="address-level2" />
-              <Field id="state" label="State / Emirate" placeholder="Dubai" autoComplete="address-level1" />
-              <Field id="postal" label="Postal Code, if applicable" placeholder="e.g. 00000" autoComplete="postal-code" />
-              <Field id="country" label="Country / Region" defaultValue="United Arab Emirates" autoComplete="country-name" />
+              <Field id="city" label="City" placeholder="Dubai" autoComplete="address-level2" onEnter={pay} />
+              <Field id="state" label="State / Emirate" placeholder="Dubai" autoComplete="address-level1" onEnter={pay} />
+              <Field id="postal" label="Postal Code, if applicable" placeholder="e.g. 00000" autoComplete="postal-code" onEnter={pay} />
+              <Field id="country" label="Country / Region" defaultValue="United Arab Emirates" autoComplete="country-name" onEnter={pay} />
             </div>
           </Card>
         </div>
