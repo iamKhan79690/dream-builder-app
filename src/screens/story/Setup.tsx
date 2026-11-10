@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useLocation } from "wouter";
 import { AppShell, WizardLayout } from "@/components/Layout";
 import { BookCover } from "@/components/BookCover";
-import { Arrow, Button, Card, ChapterPill, Heading, OptionCard, StepNav, Subtle, TextInput } from "@/components/ui";
+import { Arrow, Button, Card, Heading, OptionCard, StepNav, Subtle, TextInput } from "@/components/ui";
 import { ART_STYLES } from "@/data/content";
 import { asset } from "@/data/assets";
 import { useAppState } from "@/state/AppState";
@@ -42,7 +42,7 @@ export function AuthorScreen() {
 
 function CenteredStep({ children }: { children: ReactNode }) {
   return (
-    <AppShell tone="calm" right={<ChapterPill>Your Book</ChapterPill>}>
+    <AppShell tone="calm">
       <div className="mx-auto my-auto w-full max-w-[656px]">{children}</div>
     </AppShell>
   );
