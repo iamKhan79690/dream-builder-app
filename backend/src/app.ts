@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { authRouter } from "./routes/auth.js";
 
 export function createApp() {
   const app = express();
@@ -17,6 +18,8 @@ export function createApp() {
     res.json({ ok: true });
     return;
   });
+
+  api.use("/auth", authRouter);
 
   app.use("/api/v1", api);
 
