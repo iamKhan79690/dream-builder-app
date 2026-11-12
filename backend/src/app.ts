@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth.js";
+import { childrenRouter } from "./routes/children.js";
 
 export function createApp() {
   const app = express();
@@ -20,6 +21,7 @@ export function createApp() {
   });
 
   api.use("/auth", authRouter);
+  api.use("/children", childrenRouter);
 
   app.use("/api/v1", api);
 
