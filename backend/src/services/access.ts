@@ -1,6 +1,6 @@
 import { and, eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { children, stories, type Child, type Story } from "../db/schema.js";
+import { children, jobs, stories, type Child, type Job, type Story } from "../db/schema.js";
 import { isUuid } from "../lib/ids.js";
 
 // The one place that answers "is this yours?".
@@ -33,4 +33,19 @@ export async function getOwnedStory(userId: string, storyId: unknown): Promise<S
     .limit(1);
 
   return story ?? null;
+}
+
+// Jobs follow an even longer chain: job -> story -> child -> parent = you?
+export async function getOwnedJob(userId: string, jobId: unknown): Promise<Job | null> {
+  if (!isUuid(jobId)) return null;
+
+  const [job] = await db
+    .select(getTableColumns(jobs))
+    .from(jobs)
+    .innerJoin(stories, eq(jobs.storyId, stories.id))
+    .innerJoin(children, eq(stories.childId, children.id))
+    .where(and(eq(jobs.id, jobId), eq(children.parentId, userId)))
+    .limit(1);
+
+  return job ?? null;
 }

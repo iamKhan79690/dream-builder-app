@@ -5,7 +5,7 @@ import { jobs, panels, stories } from "../db/schema.js";
 import { emitJobEvent } from "../jobs/queue.js";
 import type { StoryState } from "../types/story.js";
 
-const PANEL_COUNT = 15;
+export const PANEL_COUNT = 15;
 const PANEL_DELAY_MS = 400;
 
 // FAKE story writer. The real version will call the AI for text and images.
