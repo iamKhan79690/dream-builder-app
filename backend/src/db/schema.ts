@@ -1,4 +1,5 @@
-import { index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { STORY_STATUSES, type StoryState } from "../types/story.js";
 
 // Each pgTable() call describes one table. The first argument is the table's name
 // in Postgres; the object lists its columns. We use camelCase in TypeScript and
@@ -53,8 +54,33 @@ export const children = pgTable(
   (table) => [index("children_parent_id_idx").on(table.parentId)],
 );
 
+export const stories = pgTable(
+  "stories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // The child writing this story. Deleting the child deletes their stories.
+    // (No parentId here: ownership is "the story's child belongs to you".)
+    childId: uuid("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    // `enum` here only narrows the TypeScript type; the routes enforce the flow.
+    status: text("status", { enum: STORY_STATUSES }).notNull().default("draft"),
+    // The whole StoryState object as one JSON value. jsonb = JSON stored in a
+    // binary form Postgres can search and merge. $type tells TypeScript its shape.
+    state: jsonb("state").$type<StoryState>().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    // $onUpdate: Drizzle sets this to "now" on every update() automatically.
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("stories_child_id_idx").on(table.childId)],
+);
+
 // Types for a row read from the table and for a row you insert.
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Session = typeof sessions.$inferSelect;
 export type Child = typeof children.$inferSelect;
+export type Story = typeof stories.$inferSelect;

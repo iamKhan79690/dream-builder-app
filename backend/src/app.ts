@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth.js";
 import { childrenRouter } from "./routes/children.js";
+import { storiesRouter } from "./routes/stories.js";
 
 export function createApp() {
   const app = express();
@@ -22,6 +23,7 @@ export function createApp() {
 
   api.use("/auth", authRouter);
   api.use("/children", childrenRouter);
+  api.use("/stories", storiesRouter);
 
   app.use("/api/v1", api);
 
