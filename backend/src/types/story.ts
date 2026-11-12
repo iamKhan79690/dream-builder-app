@@ -94,6 +94,7 @@ export const StoryPatchSchema = StoryStateSchema.omit({
 
 export type StoryPatch = z.infer<typeof StoryPatchSchema>;
 
-// draft -> child_review -> parent_review -> final
-export const STORY_STATUSES = ["draft", "child_review", "parent_review", "final"] as const;
+// draft -> generating -> child_review -> parent_review -> final
+// (generating goes back to draft if generation fails)
+export const STORY_STATUSES = ["draft", "generating", "child_review", "parent_review", "final"] as const;
 export type StoryStatus = (typeof STORY_STATUSES)[number];

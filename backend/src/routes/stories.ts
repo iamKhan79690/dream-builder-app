@@ -1,11 +1,13 @@
 import { Router, type Response } from "express";
-import { and, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../db/client.js";
-import { stories, type Story } from "../db/schema.js";
+import { jobs, panels, stories, type Panel, type Story } from "../db/schema.js";
+import { enqueue } from "../jobs/queue.js";
 import { requireParent } from "../middleware/requireParent.js";
 import { validate } from "../middleware/validate.js";
 import { getOwnedChild, getOwnedStory } from "../services/access.js";
+import { runGeneration } from "../services/generation.js";
 import { EMPTY_STORY, StoryPatchSchema, type StoryPatch, type StoryStatus } from "../types/story.js";
 
 const createStorySchema = z.object({
@@ -21,6 +23,10 @@ function toStoryResponse(story: Story) {
     createdAt: story.createdAt,
     updatedAt: story.updatedAt,
   };
+}
+
+function toPanelResponse(panel: Panel) {
+  return { number: panel.number, text: panel.text, imageUrl: panel.imageUrl, status: panel.status };
 }
 
 function notFound(res: Response) {
@@ -60,7 +66,59 @@ storiesRouter.get("/:id", async (req, res) => {
     return;
   }
 
-  res.json({ story: toStoryResponse(story) });
+  const storyPanels = await db
+    .select()
+    .from(panels)
+    .where(eq(panels.storyId, story.id))
+    .orderBy(asc(panels.number));
+
+  res.json({ story: toStoryResponse(story), panels: storyPanels.map(toPanelResponse) });
+  return;
+});
+
+// Starts writing the story. Replies 202 at once; the work runs in the background.
+// The client follows progress with the jobId (and later sees the panels in GET /:id).
+storiesRouter.post("/:id/generate", async (req, res) => {
+  const story = await getOwnedStory(req.user!.id, req.params.id);
+  if (!story) {
+    notFound(res);
+    return;
+  }
+  if (story.status !== "draft") {
+    wrongStatus(res, story.status, "draft");
+    return;
+  }
+
+  // The story can't be written without a hero.
+  const fields: Record<string, string[]> = {};
+  if (story.state.charName.trim() === "") fields.charName = ["Hero name is required"];
+  if (story.state.heroType === null) fields.heroType = ["Hero type is required"];
+  if (Object.keys(fields).length > 0) {
+    res.status(400).json({ error: "Story is not ready to generate", fields });
+    return;
+  }
+
+  // Lock the story (draft -> generating) and create the job together.
+  // `status = 'draft'` in the WHERE means two quick clicks start only ONE job.
+  const job = await db.transaction(async (tx) => {
+    const [locked] = await tx
+      .update(stories)
+      .set({ status: "generating" })
+      .where(and(eq(stories.id, story.id), eq(stories.status, "draft")))
+      .returning({ id: stories.id });
+    if (!locked) return null;
+
+    const [created] = await tx.insert(jobs).values({ storyId: story.id }).returning();
+    return created!;
+  });
+
+  if (!job) {
+    res.status(409).json({ error: "Story is no longer a draft" });
+    return;
+  }
+
+  enqueue(`generate ${story.id}`, () => runGeneration(job.id, story.id));
+  res.status(202).json({ jobId: job.id });
   return;
 });
 

@@ -1,4 +1,5 @@
-import { index, integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { check, index, integer, jsonb, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import { STORY_STATUSES, type StoryState } from "../types/story.js";
 
 // Each pgTable() call describes one table. The first argument is the table's name
@@ -78,9 +79,54 @@ export const stories = pgTable(
   (table) => [index("stories_child_id_idx").on(table.childId)],
 );
 
+export const panels = pgTable(
+  "panels",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storyId: uuid("story_id")
+      .notNull()
+      .references(() => stories.id, { onDelete: "cascade" }),
+    number: integer("number").notNull(),
+    text: text("text").notNull(),
+    imageUrl: text("image_url").notNull(),
+    status: text("status").notNull().default("ok"),
+  },
+  (table) => [
+    // A story can have only one panel 3. This also makes "panels of a story" fast.
+    unique("panels_story_id_number_unique").on(table.storyId, table.number),
+    // CHECK = a rule Postgres enforces on every insert/update, even from buggy code.
+    check("panels_number_range", sql`${table.number} BETWEEN 1 AND 15`),
+  ],
+);
+
+export const JOB_STATUSES = ["queued", "running", "done", "failed"] as const;
+export type JobStatus = (typeof JOB_STATUSES)[number];
+
+export const jobs = pgTable(
+  "jobs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storyId: uuid("story_id")
+      .notNull()
+      .references(() => stories.id, { onDelete: "cascade" }),
+    status: text("status", { enum: JOB_STATUSES }).notNull().default("queued"),
+    progress: integer("progress").notNull().default(0),
+    // A short, safe message for the user when status is "failed". Details go to the server log.
+    error: text("error"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("jobs_story_id_idx").on(table.storyId),
+    check("jobs_progress_range", sql`${table.progress} BETWEEN 0 AND 100`),
+    check("jobs_status_valid", sql`${table.status} IN ('queued', 'running', 'done', 'failed')`),
+  ],
+);
+
 // Types for a row read from the table and for a row you insert.
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Session = typeof sessions.$inferSelect;
 export type Child = typeof children.$inferSelect;
 export type Story = typeof stories.$inferSelect;
+export type Panel = typeof panels.$inferSelect;
+export type Job = typeof jobs.$inferSelect;
